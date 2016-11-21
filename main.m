@@ -16,7 +16,8 @@ cd(homeDir);
 % loads video file and converts into a matrix of images.
 videoFile = 'corral2';
 videoExt = '.mp4';
-% nframes = save_frames(videoFile,videoExt, dirSlash);
+[nframes, fps] = save_frames(videoFile,videoExt, dirSlash);
+
 
 %% Find coordinates
 % finds the coordinates in the video of the maximum change in pixels
@@ -87,10 +88,17 @@ end
 
 close(h);
 
-xMax(1) = xMax(2);
-yMax(1) = yMax(2);
-
 cd(homeDir);
+
+%% Calculate Speed
+xspeed = zeros(nframes-1,1);
+yspeed = zeros(nframes-1,1);
+speed = zeros(nframes-1,1);
+for i = 2:nframes
+    xspeed(i-1) = fps * (xMax(i) - xMax(i - 1));
+    yspeed(i-1) = fps * (yMax(i) - yMax(i - 1));
+    speed(i-1) = sqrt(xspeed(i-1).^2 + yspeed(i-1).^2);
+end
 
 %% Plot results
 cd([homeDir, dirSlash, 'frames', dirSlash, videoFile])

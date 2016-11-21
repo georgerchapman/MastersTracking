@@ -1,4 +1,4 @@
-function n = save_frames(videoFile, videoExt, slash)
+function [n, fps] = save_frames(videoFile, videoExt, slash)
 
 %% Load video
 % loads video file and converts into a matrix of images.
@@ -17,5 +17,6 @@ while hasFrame(v)
 end
 
 n = count;
+fps = v.FrameRate;
 
 end
