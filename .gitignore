@@ -1,4 +1,8 @@
+.DS_Store
 frames*
 tracks*
 videos*
-
+modelling*
+*.mp4
+*.avi
+*.MOV
