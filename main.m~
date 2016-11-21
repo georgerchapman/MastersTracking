@@ -1,8 +1,6 @@
 % progress: saves and reads in individual frames of input image.  need to
 % add selecting of droplet in first frame.
 
-clear
-
 homeDir = 'C:\Users\dwh\Documents\MATLAB\MQMTracking';
 dirSlash = '\';
 
@@ -10,13 +8,14 @@ dirSlash = '\';
 %     'University/Year 4/Masters Project/Matlab'];
 % dirSlash = '/';
 
+clear
 cd(homeDir);
 
 %% Load video
 % loads video file and converts into a matrix of images.
-videoFile = 'corral2';
-videoExt = '.mp4';
-% nframes = save_frames(videoFile,videoExt, dirSlash);
+videoFile = 'corral1';
+videoExt = '.avi';
+nframes = save_frames(videoFile,videoExt, dirSlash);
 
 %% Find coordinates
 % finds the coordinates in the video of the maximum change in pixels
@@ -45,30 +44,30 @@ pause(1);
 xMax(1) = input('Enter droplet x position: ');
 yMax(1) = input('Enter droplet y position: ');
 
-% if ('y' = input('Crop frames? (y|n): '))
-%     fxmin = input('Enter top left x: ');
-%     fymin = input('Enter top left y: ');
-%     fxmax = input('Enter bottom right x: ');
-%     fymax = input('Enter bottom right y: ');
-% else
-%     fxmin = 1;
-%     fymin = 1;
-%     fxmax = size(frame,2);
-%     fymax = size(frame,1);
-% end
+if ('y' = input('Crop frames? (y|n): '))
+    fxmin = input('Enter top left x: ');
+    fymin = input('Enter top left y: ');
+    fxmax = input('Enter bottom right x: ');
+    fymax = input('Enter bottom right y: ');
+else
+    fxmin = 1;
+    fymin = 1;
+    fxmax = size(frame,2);
+    fymax = size(frame,1);
+end
 
 h = waitbar(0,'Tracking');
 [X,Y] = meshgrid(1:size(frame,2),1:size(frame,1));
 for i = 2:nframes
-    % frameprev = frame;
+    frameprev = frame;
     load([num2str(frames(i)),'.mat']);
     
-    % diff = abs(frame - frameprev);
+    diff = abs(frame - frameprev);
 
-    blobs = conv2(double(frame),-fspecial('log',30,6),'same');
+    blobs = conv2(double(diff),-fspecial('log',30,6),'same');
     clear diff
 
-    % blobs(blobs < threshold) = 0;
+    blobs(blobs < threshold) = 0;
 
     R = ( (X - xMax(i - 1)).^2 + (Y - yMax(i - 1)).^2 ).^0.5;
     blobs(R > maxShift) = 0;
