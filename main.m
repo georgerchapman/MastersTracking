@@ -26,7 +26,7 @@ videoExt = '.mp4';
 cd([homeDir, dirSlash, 'frames', dirSlash, videoFile])
 
 threshold = 0; % min difference between frames to be considered
-maxShift = 20; % circle of radius 10 for search for next position
+maxShift = 60; % circle of radius 'maxShift' for search for next position
 
 % load list of frames
 framelist = dir('*.mat');
@@ -82,7 +82,7 @@ for i = 2:nframes
         xMax(i) = xMax(i-1);
         yMax(i) = yMax(i-1);
     end
-
+    
     waitbar(i/nframes,h);
 end
 
@@ -110,7 +110,7 @@ cd([homeDir, dirSlash, 'frames', dirSlash, videoFile])
 %     plot(xMax(1:i),yMax(1:i),'r-')
 %     hold off;
 %     axis equal
-%     pause;
+%     pause(0.001);
 % end
 
 % end view
