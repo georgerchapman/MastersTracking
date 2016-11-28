@@ -14,7 +14,7 @@ cd(homeDir);
 
 %% Load video
 % loads video file and converts into a matrix of images.
-videoFile = 'corral2';
+videoFile = '161125corral2';
 videoExt = '.mp4';
 [nframes, fps] = save_frames(videoFile,videoExt, dirSlash);
 
@@ -26,7 +26,7 @@ videoExt = '.mp4';
 cd([homeDir, dirSlash, 'frames', dirSlash, videoFile])
 
 threshold = 0; % min difference between frames to be considered
-maxShift = 60; % circle of radius 'maxShift' for search for next position
+maxShift = 100; % circle of radius 'maxShift' for search for next position
 
 % load list of frames
 framelist = dir('*.mat');
@@ -65,14 +65,19 @@ for i = 2:nframes
     load([num2str(frames(i)),'.mat']);
     
     % diff = abs(frame - frameprev);
-
-    blobs = conv2(double(frame),-fspecial('log',30,6),'same');
+    std = 6;
+    blobs = conv2(double(frame),-fspecial('log',30,std),'same');
     clear diff
 
     % blobs(blobs < threshold) = 0;
 
-    R = ( (X - xMax(i - 1)).^2 + (Y - yMax(i - 1)).^2 ).^0.5;
-    blobs(R > maxShift) = 0;
+%     R = ( (X - xMax(i - 1)).^2 + (Y - yMax(i - 1)).^2 ).^0.5;
+%     blobs(R > maxShift) = 0;
+    
+    blobs(1:2*std,:) = 0;
+    blobs(end - 2*std:end,:) = 0;
+    blobs(:,1:2*std) = 0;
+    blobs(:,end - 2*std: end) = 0;
 
     blobMax = max(blobs(:));
 
@@ -83,6 +88,11 @@ for i = 2:nframes
         yMax(i) = yMax(i-1);
     end
     
+    imagesc(blobs);
+    hold on;
+    plot(xMax(1:i),yMax(1:i),'r-');
+    hold off; 
+
     waitbar(i/nframes,h);
 end
 
